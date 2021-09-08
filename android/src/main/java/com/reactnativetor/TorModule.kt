@@ -16,6 +16,7 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+import javax.net.ssl.HostnameVerifier
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import org.json.JSONObject
 import java.util.UUID;
@@ -110,9 +111,11 @@ class TorModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaMod
     // Create an ssl socket factory with our all-trusting manager
     val sslSocketFactory = sslContext.socketFactory
 
+    val hostnameVerifier: HostnameVerifier = HostnameVerifier { _, _ -> true }
+
     return OkHttpClient.Builder()
-      .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
-      .hostnameVerifier { _, _ -> true }
+    .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+    .hostnameVerifier(hostnameVerifier)
   }
 
   override fun getName(): String {
